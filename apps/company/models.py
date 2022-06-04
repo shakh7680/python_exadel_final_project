@@ -1,5 +1,8 @@
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from apps.account.models import CustomUser
+from django.core.exceptions import ValidationError
 
 
 class CompanyServiceEquipments(models.Model):
@@ -38,17 +41,25 @@ class Rating(models.Model):
     # Only company can be rated
     def clean(self):
         company = CustomUser.objects.get(id=self.company.id)
-        if company.role != 'company':
-            msg = "You should choose company for rating"
-            self.add_error('error', msg)
+        if company.user_type != 'company':
+            raise ValidationError("You should choose company for rating!")
 
     def save(self, *args, **kwargs):
         self.full_clean()
         return super().save(*args, **kwargs)
 
 
+@receiver(post_save, sender=CustomUser)
+def create_user_cashilok(sender, instance, created, **kwargs):
+    if created:
+        if instance.user_type in CustomUser.COMPANY:
+            CompanyContacts.objects.create(company=instance)
+        else:
+            pass
+
+
 class CompanyContacts(models.Model):
-    company = models.ForeignKey('account.CustomUser', on_delete=models.CASCADE, related_name='company_contacts')
+    company = models.OneToOneField('account.CustomUser', on_delete=models.CASCADE, related_name='company_contacts')
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     facebook = models.CharField(max_length=50, blank=True, null=True)
     instagram = models.CharField(max_length=50, blank=True, null=True)

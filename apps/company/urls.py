@@ -5,7 +5,9 @@ from apps.company import views
 router = routers.SimpleRouter()
 
 router.register('equipments', views.CompanyServiceEquipmentsViewSet)
+router.register('rating', views.CompanyRatingViewSet)
+router.register('location', views.CompanyLocationViewSet)
 
 urlpatterns = [
-    # path('equipments', views.ComCompanyServiceEquipmentsView)
+      path("contacts/", views.CompanyContactsView.as_view()),
 ] + router.urls
