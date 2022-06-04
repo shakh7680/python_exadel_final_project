@@ -1,0 +1,15 @@
+DEBUG=0
+#DATABASE_URL=psql://postgres:123@localhost:5432/project
+SECRET_KEY="django-insecure-q$*nby*-kq(e-+t&)i=bosf86sy^fpc0%t_#2id^e@3^0&0+rm"
+
+POSTGRES_DB=cleaning
+POSTGRES_ENGINE=django.db.backends.postgresql
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=123
+POSTGRES_HOST=db
+POSTGRES_PORT=5432
+
+DJANGO_ALLOWED_HOSTS=*
+
+CELERY_BROKER=redis://redis:6379/0
+CELERY_BACKEND=redis://redis:6379/0

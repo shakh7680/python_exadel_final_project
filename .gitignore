@@ -1,0 +1,26 @@
+__pycache__/
+*.py[cod]
+# Translations
+*.mo
+*.pot
+assets/
+static
+.venv
+.env
+tech_env
+.idea
+tech_venv
+theme/
+media/
+.well-known/
+settings.json
+venv
+.vscode
+.vscode/
+.gitlab-ci.yml/
+.gitlab-ci.yml
+#mainapp/customadmin
+docker-compose.withdaphne.yml
+chat
+supervisord.conf
+aoritms.py
