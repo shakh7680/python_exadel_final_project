@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from apps.account.models import CustomUser
+from apps.account.models import CustomUser, Location
 from django.core.exceptions import ValidationError
 
 
@@ -54,6 +54,7 @@ def create_user_cashilok(sender, instance, created, **kwargs):
     if created:
         if instance.user_type in CustomUser.COMPANY:
             CompanyContacts.objects.create(company=instance)
+            Location.objects.create(user=instance)
         else:
             pass
 

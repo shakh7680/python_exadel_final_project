@@ -2,7 +2,7 @@ from rest_framework import serializers
 from . import models
 
 
-class UserlocationSerializer(serializers.ModelSerializer):
+class UserLocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Location
         fields = "__all__"

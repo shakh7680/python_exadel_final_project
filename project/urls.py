@@ -23,7 +23,8 @@ urlpatterns = [
     path('redoc/', yasg_schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('admin/', admin.site.urls),
     path("v1/", include('apps.account.urls')),
-    path("v1/company/", include('apps.company.urls'))
+    path("v1/company/", include('apps.company.urls')),
+    path("v1/client/", include('apps.client.urls'))
 ]
 
 if settings.DEBUG:
