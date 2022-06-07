@@ -11,5 +11,10 @@ def creators_filter_params():
     latitude = openapi.Parameter('lat', openapi.IN_QUERY,
                                  description="Longitude",
                                  type=openapi.TYPE_NUMBER)
-
     return [distance, longitude, latitude]
+
+
+def get_query():
+    query = openapi.Parameter('query', openapi.IN_QUERY, description="enter query",
+                              type=openapi.TYPE_STRING)
+    return [query]

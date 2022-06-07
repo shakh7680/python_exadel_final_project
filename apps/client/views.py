@@ -3,6 +3,7 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
+from django.db.models import Q
 
 from apps.client import serializers
 from apps.client import models
@@ -56,6 +57,35 @@ class CompanyViewForClient(mixins.ListModelMixin, GenericViewSet):
             "lon": lon,
             "lat": lat
         }
+
+
+class CompanyDetailForClientView(mixins.RetrieveModelMixin, GenericViewSet):
+    queryset = account_models.CustomUser.objects.filter(user_type=account_models.CustomUser.COMPANY)
+    serializer_class = serializers.CompanyDetailForClientSerializer
+    permission_classes = [permissions.ClientPermission]
+
+    def get_serializer_context(self):
+        return {"request": self.request}
+
+
+class CompanySearchView(mixins.ListModelMixin, GenericViewSet):
+    queryset = account_models.CustomUser.objects.filter(user_type=account_models.CustomUser.COMPANY)
+    serializer_class = serializers.CompanySearchSerializer
+    permission_classes = [permissions.ClientPermission]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.query_params.get("query")
+        if query:
+            queryset =queryset.filter(Q(first_name__icontains=query) |
+                                      Q(last_name__icontains=query) |
+                                      Q(username__icontains=query))
+        queryset = queryset.order_by("?")
+        return queryset
+
+    @swagger_auto_schema(manual_parameters=filter_params.get_query())
+    def list(self, request, *args, **kwargs):
+        return super(CompanySearchView, self).list(kwargs)
 
 
 class SavedCompanyViewSet(mixins.CreateModelMixin,

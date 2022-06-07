@@ -6,6 +6,7 @@ router = SimpleRouter()
 router.register('saved-company', views.SavedCompanyViewSet)
 router.register('saved-company-list', views.SavedCompanyListView)
 router.register('companies', views.CompanyViewForClient)
+router.register('search-creator', views.CompanySearchView)
 
 urlpatterns = [
 

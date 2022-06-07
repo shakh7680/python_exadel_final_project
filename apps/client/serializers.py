@@ -1,8 +1,7 @@
 from rest_framework import serializers
 from apps.account import models as account_model
-from apps.client import models
+from apps.client import models, modules
 from apps.account import serializers as account_serializers
-from apps.client import modules
 from haversine import haversine
 
 
@@ -36,6 +35,41 @@ class CompanySerializerForClient(serializers.ModelSerializer):
                                          (instance.user_location.lat, instance.user_location.lon))
         except:
             data["distance"] = None
+        return data
+
+
+class CompanyDetailForClientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = account_model.CustomUser
+        fields = ("id", "username", "first_name", "last_name", "image", "hourly_cost", )
+
+    def to_representation(self, instance):
+        data = super(CompanyDetailForClientSerializer, self).to_representation(instance)
+        stars = int(sum(instance.company_rating.filter(star__in=[1, 2, 3, 4, 5]).values_list('star', flat=True)))
+        number_of_stars = instance.company_rating.filter(star__in=[1, 2, 3, 4, 5]).values_list('star',
+                                                                                               flat=True).count()
+        user = self.context.get("request").user
+
+class CompanySearchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = account_model.CustomUser
+        fields = ('id', 'first_name', 'last_name', 'image')
+
+    def to_representation(self, instance):
+        data = super(CompanySearchSerializer, self).to_representation(instance)
+        stars = int(sum(instance.company_rating.filter(star__in=[0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5])
+                        .values_list('star', flat=True)))
+        num = instance.company_rating.filter(star__in=[0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]).\
+            values_list("star", flat=True).count()
+        data["location"] = None
+        try:
+            data["location"] = instance.user_location.address
+        except:
+            pass
+        if stars and num:
+            data["star"] = modules.calculate_star(stars,num)
+        else:
+            data["star"] = 0
         return data
 
 
